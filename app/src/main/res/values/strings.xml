@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">EnglishWordProject</string>
+
+    <string-array name="category">
+        <item>
+            전자레인지
+        </item>
+        <item>
+            TV
+        </item>
+        <item>
+            냉장고
+        </item>
+        <item>
+            에어컨
+        </item>
+    </string-array>
+
+</resources>
