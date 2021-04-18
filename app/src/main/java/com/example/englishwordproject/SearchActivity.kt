@@ -20,15 +20,14 @@ class SearchActivity : AppCompatActivity() {
     var data4: ArrayList<Mydata> = ArrayList()
     var total_Data: ArrayList<Mydata> = ArrayList()
     var temp_Data: ArrayList<Mydata> = ArrayList()
-    var add_Data: ArrayList<Mydata> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initData()
-        init()
+        initData()   //내부, 외부 데이터를 받아온다.
+        init()       //리싸이클러뷰, 검색 기능 init
     }
 
     private fun init() {
@@ -36,18 +35,18 @@ class SearchActivity : AppCompatActivity() {
         total_Data.addAll(data2)
         total_Data.addAll(data3)
         total_Data.addAll(data4)
-        temp_Data.addAll(total_Data)
+        temp_Data.addAll(total_Data)    //data1~4까지 뭉쳐버린다.
         binding.searchrecyclerview.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         binding.searchBtn.setOnClickListener {
             var str = binding.searchEdit.text
             total_Data.clear()
             total_Data.addAll(temp_Data)
-            val iterator = total_Data.iterator()
+            val iterator = total_Data.iterator()   //항목 지우거나 할 때는 iterator를 써야한다.
             while(iterator.hasNext()) {
                 var it = iterator.next()
                 if(!it.name.contains(str)){
-                    iterator.remove()
+                    iterator.remove()      //나는 remove를 선택했다.
                 }else{
                     Log.e("find!", "value!")
                 }
@@ -55,14 +54,14 @@ class SearchActivity : AppCompatActivity() {
             binding.searchEdit.text.clear()
             myadapter.notifyDataSetChanged()
         }
-
+        // 관련 리스너가 끝나고 나서 recyclerview와 adapter를 연결해준다.
         myadapter = Myadapter(total_Data)
         binding.searchrecyclerview.adapter = myadapter
 
     }
 
 
-    private fun initData() {
+    private fun initData() {   //내부는 try로 시도, 외부는 그냥 가져옴(resources.openRawResource(R.raw.data)
         try {
             val scan_1 = Scanner(openFileInput("data1.txt"))
             readfile(scan_1, data1)
@@ -97,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
         readfile(scan4, data4)
     }
 
-    private fun readfile(scan: Scanner, data: ArrayList<Mydata>) {
+    private fun readfile(scan: Scanner, data: ArrayList<Mydata>) {   //데이터 형식이 3개라는 것이다.
         while (scan.hasNextLine()) {
             var name = scan.nextLine()
             var price = scan.nextLine()

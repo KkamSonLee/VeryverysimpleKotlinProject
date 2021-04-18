@@ -13,13 +13,13 @@ class MainActivity : AppCompatActivity() {
     var REQUEST_CODE = 100
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = ActivityMainBinding.inflate(layoutInflater)    //binding 쓰려면 꼭 해야한다....
+        setContentView(binding.root)               //여튼 권한 승인도 결국엔 Manifests에 uses-permission이 있어야한다.
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE)!=PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CALL_PHONE), REQUEST_CODE)
         }else{
             init()
-        }
+        }// 권한승인 체크 후 없으면 승인 요청, 결과는 onRequest로 확인
     }
 
     private fun init() {
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
+    override fun onRequestPermissionsResult(//승인됐으면 승인 됐다고 처리해주는 코드, 승인 안되면 앱 꺼버림
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray

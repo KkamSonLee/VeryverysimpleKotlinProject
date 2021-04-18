@@ -30,7 +30,7 @@ class Myadapter(var items:ArrayList<Mydata>): RecyclerView.Adapter<Myadapter.Vie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemname.text = items[position].name
-        holder.price.text = items[position].price.toString()
+        holder.price.text = items[position].price
     }
 
     override fun getItemCount(): Int {

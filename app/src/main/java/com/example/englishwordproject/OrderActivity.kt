@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.englishwordproject.databinding.OrderactivityMainBinding
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -22,15 +21,14 @@ class OrderActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var addrecyclerView: RecyclerView
     lateinit var myspinner: Spinner
-    lateinit var binding: OrderactivityMainBinding
     lateinit var orderBtn: Button
     var data1: ArrayList<Mydata> = ArrayList()
     var data2: ArrayList<Mydata> = ArrayList()
     var data3: ArrayList<Mydata> = ArrayList()
-    var data4: ArrayList<Mydata> = ArrayList()
+    var data4: ArrayList<Mydata> = ArrayList()   // 카테고리별 데이터들
     var total_Data: ArrayList<Mydata> = ArrayList()
     var add_Data: ArrayList<Mydata> = ArrayList()
-    var totalPrice = 0
+    var totalPrice = 0          // 주문하기 누르면 전체 값 저장 할 친구
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.orderactivity_main)
@@ -44,7 +42,7 @@ class OrderActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerview)
         addrecyclerView = findViewById(R.id.addrecyclerview)
 
-        myspinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        myspinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {        //스피너 생성은 기억이 안날수도 있으니 한 번 봐라.
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 view: View?,
@@ -52,13 +50,13 @@ class OrderActivity : AppCompatActivity() {
                 id: Long
             ) {
                 total_Data.clear()
-                when (position) {
+                when (position) {   //해당 카테고리 포지션에 따라 다른 데이터를 total_Date에 추가했다.(전자레인지 그런거)
                     0 -> total_Data.addAll(data1)
                     1 -> total_Data.addAll(data2)
                     2 -> total_Data.addAll(data3)
                     3 -> total_Data.addAll(data4)
                 }
-                myadapter.notifyDataSetChanged()
+                myadapter.notifyDataSetChanged()  //데이터 바꾸면 알려줘야지?
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -70,10 +68,10 @@ class OrderActivity : AppCompatActivity() {
         }
 
         if (total_Data.isEmpty()) {
-            total_Data.addAll(data1)
+            total_Data.addAll(data1)        //defualt는 전자레인지다.
         }
         myadapter = Myadapter(total_Data)
-        addmyadapter = Myadapter(add_Data)
+        addmyadapter = Myadapter(add_Data)  //이거는 처음에 비어있다.
         addrecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -105,7 +103,7 @@ class OrderActivity : AppCompatActivity() {
             }
 
         }
-        orderBtn.setOnClickListener {
+        orderBtn.setOnClickListener {     //볼거면 이쪽 보셔, 나름 유용한 부분
             totalPrice = 0
             add_Data.forEach {
                 totalPrice += it.price.toInt()
