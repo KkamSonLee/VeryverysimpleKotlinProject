@@ -25,14 +25,17 @@ class MainActivity : AppCompatActivity() {
     private fun init() {
         binding.addtionbtn.setOnClickListener {
             var intent = Intent(this, AdditionActivity :: class.java)
+            intent.putExtra("addtion", "addtion!")
             startActivity(intent)
         }
         binding.orderactibtn.setOnClickListener {
             var intent = Intent(this, OrderActivity :: class.java)
+            intent.putExtra("order", "order!")
             startActivity(intent)
         }
         binding.searchbtn.setOnClickListener {
             var intent = Intent(this, SearchActivity :: class.java)
+            intent.putExtra("search", "search!")
             startActivity(intent)
         }
     }

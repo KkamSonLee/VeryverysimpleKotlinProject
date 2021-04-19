@@ -12,6 +12,17 @@ class Myadapter(var items:ArrayList<Mydata>): RecyclerView.Adapter<Myadapter.Vie
         fun OnItemClick(holder:ViewHolder, view:View, data:Mydata, position:Int)
     }
 
+    fun remove(pos:Int){
+        items.removeAt(pos)
+        notifyDataSetChanged()
+    }
+    fun move(oldPos:Int, newPos:Int){
+        val item = items[oldPos]
+        items.removeAt(oldPos)
+        items.add(newPos, item)
+        notifyItemMoved(oldPos, newPos)
+    }
+
     inner class ViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
         val itemname:TextView = itemView.findViewById(R.id.name)
         val price:TextView = itemView.findViewById(R.id.price)

@@ -32,6 +32,10 @@ class OrderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.orderactivity_main)
+        val massage = intent.getStringExtra("order")
+        if(massage!= null){
+            Toast.makeText(this, massage, Toast.LENGTH_SHORT).show()
+        }
         initData()
         initRecyclerView()
     }
@@ -157,7 +161,5 @@ class OrderActivity : AppCompatActivity() {
             var tel = scan.nextLine()
             data.add(Mydata(name, price, tel, false))
         }
-
-
     }
 }

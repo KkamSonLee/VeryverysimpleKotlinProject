@@ -1,9 +1,21 @@
 package com.example.englishwordproject
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.englishwordproject.databinding.ActivitySearchBinding
 import java.util.*
 import kotlin.collections.ArrayList
@@ -26,6 +38,11 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val str = intent.getStringExtra("time")
+        val massage = intent.getStringExtra("search")
+        if(massage!= null){
+            Toast.makeText(this, massage, Toast.LENGTH_SHORT).show()
+        }
         initData()   //내부, 외부 데이터를 받아온다.
         init()       //리싸이클러뷰, 검색 기능 init
     }
@@ -41,23 +58,49 @@ class SearchActivity : AppCompatActivity() {
         binding.searchBtn.setOnClickListener {
             var str = binding.searchEdit.text
             total_Data.clear()
-            total_Data.addAll(temp_Data)
-            val iterator = total_Data.iterator()   //항목 지우거나 할 때는 iterator를 써야한다.
-            while(iterator.hasNext()) {
-                var it = iterator.next()
-                if(!it.name.contains(str)){
-                    iterator.remove()      //나는 remove를 선택했다.
-                }else{
-                    Log.e("find!", "value!")
+
+            var iterator = temp_Data.iterator()
+            iterator.forEach {
+                if(it.name.contains(str)){
+                    total_Data.add(it)
                 }
             }
-            binding.searchEdit.text.clear()
             myadapter.notifyDataSetChanged()
+            binding.searchEdit.text.clear()
+        }
+
+        myadapter = Myadapter(total_Data)
+        myadapter.itemOnClickListener = object : Myadapter.OnItemClickListener{
+            override fun OnItemClick(
+                holder: Myadapter.ViewHolder,
+                view: View,
+                data: Mydata,
+                position: Int
+            ) {
+                makenotification(data)
+            }
+
         }
         // 관련 리스너가 끝나고 나서 recyclerview와 adapter를 연결해준다.
-        myadapter = Myadapter(total_Data)
         binding.searchrecyclerview.adapter = myadapter
+        val simpleCallback = object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN or ItemTouchHelper.UP, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                myadapter.move(viewHolder.adapterPosition, target.adapterPosition)
+                return true
+            }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                myadapter.remove(viewHolder.adapterPosition)
+
+            }
+
+        }
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(binding.searchrecyclerview)
     }
 
 
@@ -106,4 +149,32 @@ class SearchActivity : AppCompatActivity() {
 
 
     }
+
+    fun makenotification(data: Mydata) {
+        val id = "MyChannel"
+        val name = "TimeCheckChannel"
+        val notificationChannel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT)
+        notificationChannel.enableVibration(true)
+        notificationChannel.enableLights(true)
+        notificationChannel.lightColor = Color.BLUE
+        notificationChannel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+
+        val builder = NotificationCompat.Builder(this, id)
+            .setSmallIcon(R.drawable.hat)
+            .setContentTitle("일정 알림")
+            .setContentText(data.name)
+            .setAutoCancel(true)
+        val intent = Intent(this, SearchActivity::class.java)
+        intent.putExtra("time", data.name)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+
+        val pendingIntent = PendingIntent.getActivity(this, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        builder.setContentIntent(pendingIntent)
+
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager //as로 매니저 객체 생성
+        val notification = builder.build()
+        manager.createNotificationChannel(notificationChannel)
+        manager.notify(10, notification)
+    }
+
 }

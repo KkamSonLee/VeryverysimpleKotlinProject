@@ -17,6 +17,10 @@ class AdditionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAdditionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val massage = intent.getStringExtra("addtion")
+        if(massage!= null){
+            Toast.makeText(this, massage, Toast.LENGTH_SHORT).show()
+        }
         init()
 
 
